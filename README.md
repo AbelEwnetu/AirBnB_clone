@@ -1,4 +1,4 @@
-A read me file for 0x00. AirBnB clone - The console group project by (Hiwot Molalign and Abel Ewnetu)mandatory and advanced tasks.
+a read me file for 0x00. AirBnB clone - The console group project by (Hiwot Molalign and Abel Ewnetu)mandatory and advanced tasks.
 
 The goal of this project is to deploy a server with a simple copy of the AirBnB web app to demonstrate technical grasp (dare we say mastery?) of both front & backend development.
 
