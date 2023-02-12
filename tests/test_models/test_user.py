@@ -1,16 +1,43 @@
-#!/usr/bin/python3
-""" testing User """
+#!/usr/bin/python
+"""
+Test user class
+"""
 import unittest
-import pep8
 from models.user import User
 
-class User_testing(unittest.TestCase):
-    """ check BaseModel """
 
-    def testpep8(self):
-        """ testing codestyle """
-        pepstylecode = pep8.StyleGuide(quiet=True)
-        path_user = 'models/user.py'
-        result = pepstylecode.check_files([path_user])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+class TestUser(unittest.TestCase):
+    """test for user"""
+    def setUp(self):
+        """ standard setUp()
+        """
+        self.model = User()
+
+    def test_public_attr(self):
+        """ if public attributes are exist and if equal to empty string
+        """
+        self.assertTrue(hasattr(self.model, "email"))
+        self.assertTrue(hasattr(self.model, "password"))
+        self.assertTrue(hasattr(self.model, "first_name"))
+        self.assertTrue(hasattr(self.model, "last_name"))
+        self.assertEqual(self.model.email, "")
+        self.assertEqual(self.model.password, "")
+        self.assertEqual(self.model.first_name, "")
+        self.assertEqual(self.model.last_name, "")
+
+    def test_strings(self):
+        """ input for each attr
+        """
+        self.model.email = "airbnb@holbertonshool.com"
+        self.model.password = "root"
+        self.model.first_name = "Betty"
+        self.model.last_name = "Holberton"
+        self.assertEqual(self.model.email, "airbnb@holbertonshool.com")
+        self.assertEqual(self.model.password, "root")
+        self.assertEqual(self.model.first_name, "Betty")
+        self.assertEqual(self.model.last_name, "Holberton")
+
+
+if __name__ == '__main__':
+    unittest.main()
+

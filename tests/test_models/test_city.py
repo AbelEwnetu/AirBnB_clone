@@ -1,16 +1,39 @@
 #!/usr/bin/python3
-""" testing city """
+"""
+Test city class
+"""
+
+
 import unittest
-import pep8
 from models.city import City
 
-class City_testing(unittest.TestCase):
-    """ check BaseModel """
 
-    def testpep8(self):
-        """ testing codestyle """
-        pepstylecode = pep8.StyleGuide(quiet=True)
-        path_user = 'models/city.py'
-        result = pepstylecode.check_files([path_user])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+class TestCity(unittest.TestCase):
+    """ test for city
+    """
+    def setUp(self):
+        """ standard setUp()
+        """
+        self.model = City()
+
+    def test_public_attr(self):
+        """ if public attribute exists and if equal to empty string
+        """
+        self.assertTrue(hasattr(self.model, "state_id"))
+        self.assertTrue(hasattr(self.model, "name"))
+        self.assertEqual(self.model.state_id, "")
+        self.assertEqual(self.model.name, "")
+
+    def test_strings(self):
+        """ input for each attr
+        """
+        self.model.name = "San Francisco"
+        # OJO
+        self.model.state_id = "7d78d8de-a37f-4edd-9443-1578032a1eea"
+        self.assertEqual(self.model.name, "San Francisco")
+        self.assertEqual(self.model.state_id,
+                         "7d78d8de-a37f-4edd-9443-1578032a1eea")
+
+
+if __name__ == '__main__':
+    unittest.main()

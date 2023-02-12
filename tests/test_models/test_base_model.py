@@ -1,109 +1,93 @@
 #!/usr/bin/python3
-""" testing files """
-import unittest
-import inspect
+""" Contains unit tests for class BaseModel """
+
+
 import pep8
-from models.base_model import BaseModel
+import unittest
+import io
+import sys
 from datetime import datetime
+from models.base_model import BaseModel
+import models
 
 
-class BaseModel_testing(unittest.TestCase):
-    """ check BaseModel """
+class TestBaseModel(unittest.TestCase):
+    """test for class BaseModel and its methods
+    """
+    def setUp(self):
+        """ Set up method
+        """
+        self.base1 = BaseModel()
+        self.base2 = BaseModel()
 
-    def testpep8(self):
-        """ testing codestyle """
-        pepstylecode = pep8.StyleGuide(quiet=True)
-        rest = pepstylecode.check_files(['models/base_model.py',
-                                         'models/__init__.py',
-                                         'models/engine/file_storage.py'])
-        self.assertEqual(rest.total_errors, 0,
-                         "Found code style errors (and warnings).")
+    def tearDown(self):
+        """ Tear down method
+        """
+        pass
+
+    def test_base_pep8(self):
+        """ test pep8
+        """
+        pep8style = pep8.StyleGuide(quiet=True)
+        result = pep8style.check_files(['./models/base_model.py'])
+        self.assertEqual(result.total_errors, 0)
+
+    def test_docstring(self):
+        """ test doc in the file
+        """
+        self.assertIsNotNone(BaseModel.__doc__)
+        self.assertIsNotNone(BaseModel.__init__.__doc__)
+        self.assertIsNotNone(BaseModel.save.__doc__)
+
+    def test_uuid(self):
+        """ Test for uuid
+        """
+        self.assertNotEqual(self.base1.id, self.base2.id)
+        self.assertTrue(hasattr(self.base1, "id"))
+        self.assertEqual(type(self.base1.id), str)
+        self.assertEqual(type(self.base2.id), str)
+
+    def test_instance(self):
+        """ Test for instance
+        """
+        self.assertTrue(isinstance(self.base1, BaseModel))
+        self.assertTrue(isinstance(self.base2, BaseModel))
+
+    def test_type(self):
+        """ Test for type of object
+        """
+        self.assertEqual(type(self.base1), BaseModel)
+        self.assertEqual(type(self.base2), BaseModel)
+
+    def test_save(self):
+        """ Test for save
+        """
+        time = self.base1.updated_at
+        self.base1.save()
+        self.assertFalse(time == self.base1.updated_at)
+
+    def test_update(self):
+        """ Test for update
+        """
+        self.base1.name = "Holberton"
+        self.assertTrue(hasattr(self.base1, "name"))
+
+    def test_init_with_kwargs(self):
+        """ Test to init for kwargs
+        """
+        self.base1.name = "Holberton"
+        model_json = self.base1.to_dict()
+        new_model = BaseModel(**model_json)
+        self.assertDictEqual(model_json, new_model.to_dict())
+        self.assertIn("name", new_model.to_dict())
+        self.assertIsNot(self.base1, new_model)
+
+    def test_storage(self):
+        """ Test to staorage
+        """
+        obj_dict = models.storage.all()
+        self.assertTrue(obj_dict)
 
 
-class test_for_base_model(unittest.TestCase):
-    """ Class test for BaseModel """
-    my_model = BaseModel()
-
-    def TearDown(self):
-        """ delete json file """
-        del self.test
-
-    def SetUp(self):
-        """ Create instance """
-        self.test = BaseModel()
-
-    def test_attr_none(self):
-        """None attribute."""
-        object_test = BaseModel(None)
-        self.assertTrue(hasattr(object_test, "id"))
-        self.assertTrue(hasattr(object_test, "created_at"))
-        self.assertTrue(hasattr(object_test, "updated_at"))
-
-    def test_kwargs_constructor_2(self):
-        """ check id with data """
-        dictonary = {'score': 100}
-
-        object_test = BaseModel(**dictonary)
-        self.assertTrue(hasattr(object_test, 'id'))
-        self.assertTrue(hasattr(object_test, 'created_at'))
-        self.assertTrue(hasattr(object_test, 'updated_at'))
-        self.assertTrue(hasattr(object_test, 'score'))
-
-    def test_str(self):
-        """ Test string """
-        dictonary = {'id': 'cc9909cf-a909-9b90-9999-999fd99ca9a9',
-                     'created_at': '2025-06-28T14:00:00.000001',
-                     '__class__': 'BaseModel',
-                     'updated_at': '2030-06-28T14:00:00.000001',
-                     'score': 100
-                     }
-
-        object_test = BaseModel(**dictonary)
-        out = "[{}] ({}) {}\n".format(type(object_test).__name__, object_test.id, object_test.__dict__)
-
-    def test_to_dict(self):
-        """ check dict """
-        object_test = BaseModel(score=300)
-        n_dict = object_test.to_dict()
-
-        self.assertEqual(n_dict['id'], object_test.id)
-        self.assertEqual(n_dict['score'], 300)
-        self.assertEqual(n_dict['__class__'], 'BaseModel')
-        self.assertEqual(n_dict['created_at'], object_test.created_at.isoformat())
-        self.assertEqual(n_dict['updated_at'], object_test.updated_at.isoformat())
-
-        self.assertEqual(type(n_dict['created_at']), str)
-        self.assertEqual(type(n_dict['created_at']), str)
-
-    def test_datetime(self):
-        """ check datatime """
-        bas1 = BaseModel()
-        self.assertFalse(datetime.now() == bas1.created_at)
-
-    def test_BaseModel(self):
-        """ check attributes values in a BaseModel """
-
-        self.my_model.name = "Holbie"
-        self.my_model.my_number = 100
-        self.my_model.save()
-        my_model_json = self.my_model.to_dict()
-
-        self.assertEqual(self.my_model.name, my_model_json['name'])
-        self.assertEqual(self.my_model.my_number, my_model_json['my_number'])
-        self.assertEqual('BaseModel', my_model_json['__class__'])
-        self.assertEqual(self.my_model.id, my_model_json['id'])
-
-    def test_savefirst(self):
-        """check numbers"""
-        with self.assertRaises(AttributeError):
-            BaseModel.save([455, 323232, 2323, 2323, 23332])
-
-    def test_savesecond(self):
-        """ check string """
-        with self.assertRaises(AttributeError):
-            BaseModel.save("THIS IS A TEST")
-
-    def test_inst(self):
-        """check class """
-        ml = BaseModel()
-        self.assertTrue(ml, BaseModel)
+if __name__ == '__main__':
+    unittest.main()
