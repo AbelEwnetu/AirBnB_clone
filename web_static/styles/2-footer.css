@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 footer{
     Background-color:#00FF00;
     height:60px;
@@ -6,4 +7,15 @@ footer{
     bottom:0;
     text-align:center;
     line-height:60px
+=======
+footer {
+    position: absolute;
+    bottom: 0;
+    background-color: #00FF00;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+>>>>>>> 1f587245bf7e652b69d3c02e3f803996a4ddccfa
 }
